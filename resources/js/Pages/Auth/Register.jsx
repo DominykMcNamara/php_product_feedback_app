@@ -12,6 +12,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        avatar: '',
     });
 
     useEffect(() => {
@@ -25,6 +26,18 @@ export default function Register() {
 
         post(route('register'));
     };
+
+    function handleImageChange(e) {
+        e.preventDefault();
+        const file = e.target.files?.[0]
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setData({...data, avatar: event.target?.result})
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
     return (
         <GuestLayout>
@@ -97,6 +110,17 @@ export default function Register() {
                     />
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
+                </div>
+                <div>
+                <TextInput
+                        id="avatar"
+                        type="file"
+                        name="avatar"
+    
+                        className="rounded-sm my-1"
+                        onChange={handleImageChange}
+                        required
+                    />
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
