@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -37,16 +37,21 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'avatar' => 'string'
+            'avatar' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+        $userData = $request->except('avatar');
+        $avatar = $request->file('avatar');
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'avatar' =>  $request->avatar
+        if ($avatar) {
+            $cloudinaryResponse = Cloudinary::upload($avatar->getRealPath());
 
-        ]);
+            // Save the Cloudinary URL to the user's profile
+            $userData['avatar'] = $cloudinaryResponse->getSecurePath();
+        }
+
+       
+
+        $user = User::create($userData);
 
         event(new Registered($user));
 
