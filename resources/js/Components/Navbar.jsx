@@ -6,18 +6,15 @@ import UserAvatar from "./UserAvatar";
 export default function Navbar({ user }) {
     return (
         <div>
-            <div
-                className="sm:fixed sm:top-0 sm:right-0
-                 text-right flex flex-row justify-around w-full py-2"
-            >
-                <div className="">
+            <div className="sm:fixed sm:top-0 sm:right-0 text-right flex flex-row justify-around w-full">
+                <div className="my-auto">
                     <ApplicationLogo />
                 </div>
                 {user ? (
                     <div className="flex flex-row w-[10rem] justify-between ">
                         <Link
                             href={route("dashboard")}
-                            className="font-semibold"
+                            className="font-semibold my-auto"
                         >
                             Dashboard
                         </Link>
